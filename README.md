@@ -1,4 +1,6 @@
 # nlpProject
+If you can read this file, you've successfully cloned the git repository. 
+
 If this is your first time using git take a look at this to familiarize yourself with it:
 http://git-scm.com/book/en/v2/Getting-Started-Git-Basics 
 
