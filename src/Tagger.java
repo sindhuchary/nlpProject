@@ -54,7 +54,7 @@ public class Tagger {
       fnfe.printStackTrace();
     }  
 
-    return tagged;
+    return tagged;//List<String> and every string is a sentence with this structure: "Cats/NN scratch/vb walls/NN"
   }
 
   //RemoveNoise takes the tagged sentences and returns a list of vectors containing words essential to the review sentence
