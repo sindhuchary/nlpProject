@@ -19,13 +19,11 @@
   <property name="compile.debug"       value="true"/>
   <property name="compile.deprecation" value="false"/>
   <property name="compile.optimize"    value="true"/>
-  <property name="compile.source"      value="1.5" />
+  <property name="compile.source"      value="1.6" />
 
-  <target name="classpath">
-    <path id="classpath">
-      <pathelement path="${basedir}/lib/stanford-postagger.jar"/>
-    </path>
-  </target>
+  <path id="lib.path">
+    <fileset dir="${basedir}" includes="**/*.jar"/>
+  </path>
 
 
 <!-- ==================== All Target ====================================== -->
@@ -66,7 +64,7 @@
 
 -->
 
-  <target name="compile" depends="classpath" description="Compile Java sources">
+  <target name="compile" description="Compile Java sources">
 
     <mkdir    dir="${build.home}"/>
     <javac srcdir="${src.home}"
@@ -74,6 +72,7 @@
             debug="${compile.debug}"
       deprecation="${compile.deprecation}"
          optimize="${compile.optimize}"
+	 classpathref="lib.path"
 	   source="${compile.source}">
     </javac>
 
