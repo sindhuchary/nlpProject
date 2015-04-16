@@ -26,7 +26,7 @@ public class Vectorizer {
             tempVect.incrementCount(word,1.0);
           }
           tempVectList.add(tempVect);
-        }
+        } 
         retHM.put(ID,tempVectList);
     }
     return retHM;
