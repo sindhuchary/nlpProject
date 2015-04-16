@@ -38,7 +38,7 @@ public class Tagger {
     List<String> tagged = new ArrayList<String>();
 
     //Loads the proper Stanford POS Tagger trained on English words
-    MaxentTagger tagger = new MaxentTagger("english-left3words-distsim.tagger");
+    MaxentTagger tagger = new MaxentTagger("lib/english-left3words-distsim.tagger");
 
     try {
       //Creates a tokenizer based on a Buffered reader that reads in the provided filename
