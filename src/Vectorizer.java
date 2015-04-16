@@ -13,7 +13,7 @@ public class Vectorizer {
 
   public Vectorizer( ) {//constructor
   }
-
+ 
   //input is hashmap of ID's and list of sentences
   public HashMap<String, ArrayList<Counter<String>> > makeVectors(HashMap<String, ArrayList< List<String> > > hm) {    
     HashMap<String, ArrayList<Counter<String>> > retHM = new HashMap<String, ArrayList<Counter<String>> >();
