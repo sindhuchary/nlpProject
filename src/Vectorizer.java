@@ -21,7 +21,7 @@ public class Vectorizer {
         ArrayList<Counter<String>> tempVectList=new ArrayList<Counter<String>>();
         //hm.get(ID) returns back List< List<String> > 
         for(List<String> sentence : hm.get(ID) ){//loop through the list of sentences for that specific ID 
-          Counter tempVect = new Counter<String>();
+          Counter tempVect = new Counter<String>(); 
           for(String word : sentence){//loop through the sentence
             tempVect.incrementCount(word,1.0);
           }
