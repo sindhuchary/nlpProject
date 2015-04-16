@@ -19,7 +19,7 @@
   <property name="compile.debug"       value="true"/>
   <property name="compile.deprecation" value="false"/>
   <property name="compile.optimize"    value="true"/>
-  <property name="compile.source"      value="1.6" />
+  <property name="compile.source"      value="1.5" />
 
   <path id="lib.path">
     <fileset dir="${basedir}" includes="**/*.jar"/>
@@ -50,7 +50,7 @@
 -->
 
   <target name="clean" description="Delete old classes">
-    <delete dir="${build.home}/usna"/>
+    <delete dir="${build.home}"/>
   </target>
 
 
