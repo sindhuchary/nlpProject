@@ -20,11 +20,11 @@ public class Summarize{
         }
         String filename = args[0]; 
 
-       //run tagger on file
+       //TODO: run tagger on file
 
-       //run vectorize 
+       //TODO: run vectorize 
 
-       //
+       //TODO: run the k-means cluster Algorithm
     }
 
 }
