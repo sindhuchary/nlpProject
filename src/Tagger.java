@@ -4,14 +4,20 @@
 //NLP/Chambers
 
 //Imports
+import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import java.util.List;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
+import java.util.NoSuchElementException;
 
 //Stanford POS Tagger imports
-//Taken from: nlp.stanford.edu/software/tagger.shtml
+//--Taken from: nlp.stanford.edu/software/tagger.shtml
 import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.ling.TaggedWord;
 import edu.stanford.nlp.ling.HasWord;
@@ -20,10 +26,64 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 //Tagger class reads in a text file of Strings and returns a vectors of Strings in vector form
 public class Tagger {
 
+  //Declarations
+  private static HashMap<String,List<ArrayList<String>>> productMap;
+
+  //HashMap< ProductId, ListList Sentences >
+  //HashMap< ProductId, List rawSentences >
+
+  private void parse( String filename ) {
+
+    try{
+
+      //Create a reader to read in the file provided
+      Scanner scan = new Scanner( new File( filename ) );
+
+      try {
+      
+        //Temp string to hold new lines
+        String newLine;
+
+        //Trace over reviews to parse out product IDs
+        while( scan.hasNextLine() ) {
+
+           //Store the line
+           newLine = scan.nextLine();
+
+           if( newLine.contains( "productId" ) ) {
+             
+             productMap.put( newLine.split( ":" )[1].substring(1), new ArrayList<ArrayList<String>>() );
+
+           }  
+
+           //Write productId to a file?
+           //Write subsequent reviews beneath?
+	   //--Basically, until you see a new productId, skip over the junk and add the reviews to the file with 
+	   //--new lines in between
+        }
+
+        //Close the file stream
+        scan.close();
+
+      } catch( NoSuchElementException nsee ) {
+          System.err.println( "Problem in the file input stream." );
+          return;
+      }
+
+    } catch( FileNotFoundException fnfe ) {
+	System.err.println( "File open error.  Please check that your file is correct." );
+        System.exit(13);
+    }
+
+  }
+
   //Vectorize takes in a filename and returns a vectorized form of the Strings with only the key information
   public List<ArrayList<String>> vectorize( String filename ) {
     List<String> vectors = new ArrayList<String>();
 
+    //Parse the file for the product id and review text
+    parse( filename );
+      
     //Call the tag function to tag each sentence with POS tags
     vectors = tag( filename );
 
@@ -72,6 +132,7 @@ public class Tagger {
       temp = t.split(" ");//split each sentence into word/tag pairs
 
       //Split each word/tag pair and add the ones matching our keepTags list to the final vector
+      //Java contains? String contains from array? TODO****
       for( int i = 0; i < temp.length; i++ ) {
         temp2 = temp[i].split("/");
 
@@ -100,6 +161,9 @@ public class Tagger {
 
     //Create an instance of a Tagger()
     Tagger newTagger = new Tagger();
+
+    //Initialize productMap
+    productMap = new HashMap<String,List<ArrayList<String>>>();
 
     //Vectorize the Strings in the input file
     List<ArrayList<String>> vectors = newTagger.vectorize( args[0] );
