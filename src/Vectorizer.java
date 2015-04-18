@@ -21,7 +21,7 @@ public class Vectorizer {
         ArrayList<Counter<String>> tempVectList=new ArrayList<Counter<String>>();
         //hm.get(ID) returns back List< List<String> > 
         for(List<String> sentence : hm.get(ID) ){//loop through the list of sentences for that specific ID 
-          Counter tempVect = new Counter<String>(); 
+          Counter<String> tempVect = new Counter<String>(); 
           for(String word : sentence){//loop through the sentence
             tempVect.incrementCount(word,1.0);
           }
@@ -36,7 +36,31 @@ public class Vectorizer {
   
   
   public static void main( String[] args ) throws Exception {
-     
+     HashMap<String, ArrayList<List<String>> > hh = new HashMap<String, ArrayList<List<String>> >();
+	 String Id="1";String s1="loving " ;String s2="life";
+	 List<String> l0 = new List<String>(); l0.add(s1);l0.add(s2);
+	 ArrayList<List<String>> li0=new ArrayList<List<String>>();
+	 li0.add(l0);
+	 hh.put(Id,li0);
+	 	 
+	 Id="2";s1="having" ;s2="dreams";
+	 List<String> ll = new List<String>(); ll.add(s1);ll.add(s2);
+	 ArrayList<List<String>> lii=new ArrayList<List<String>>();
+	 lii.add(ll);
+	 hh.put(Id,lii);
+	 
+	 HashMap<String, ArrayList<Counter<String>> > hm =makeVectors(hh);
+	 
+	 // Get a set of the entries
+      Set set = hm.entrySet();
+      // Get an iterator
+      Iterator i = set.iterator();
+      // Display elements
+      while(i.hasNext()) {
+         Map.Entry me = (Map.Entry)i.next();
+         System.out.print(me.getKey() + ": ");
+         System.out.println(me.getValue());
+      }
      
   }
 }

@@ -3,9 +3,9 @@
 *   Date:       15APR15
 *   Purpose:    This class runs the K-means cluster algorithm using the Tagger and Vectorizer 
 */
-import util.Counter; 
 import java.util.List; 
 import java.util.ArrayList; 
+import util.Counter; 
 public class Cluster{
     private List<Integer> indices; 
     private Counter<String> currentCentroid;
@@ -20,9 +20,12 @@ public class Cluster{
     public Counter<String> getCurrentCentroid(){return currentCentroid;}
     public Counter<String> getOldCentroid(){return oldCentroid;}
     
-    public updateCentroid(ArrayList<Counter<String>> vectors){
+    public void updateCentroid(ArrayList<Counter<String>> vectors){
         for(int i : indices){
-            
+            Counter<String> vect=vectors.get(i);
+			for(String s : vect.keySet()){
+			  currentCentroid.incrementCount(s, vect.getCount(s));
+			}
         }
     }
 
