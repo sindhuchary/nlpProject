@@ -35,6 +35,8 @@ public class Summarize{
 
 
    // HashMap<String, ArrayList<Counter<String>> >
+       //double Loop here: loop through products and loop til clusters centroid dont change that much anymore
+       
     }
 
 }
