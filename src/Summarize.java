@@ -21,10 +21,20 @@ public class Summarize{
         String filename = args[0]; 
 
        //TODO: run tagger on file
+       
+        //Create an instance of a Tagger()
+        Tagger newTagger = new Tagger();
 
-       //TODO: run vectorize 
+        //Vectorize the Strings in the input file
+        
+        //Print out the vectors
+        
+        //TODO: run vectorize --> HashMap<Ids, ArrayList<Counter>> 
 
        //TODO: run the k-means cluster Algorithm
+
+
+   // HashMap<String, ArrayList<Counter<String>> >
     }
 
 }
