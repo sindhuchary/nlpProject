@@ -11,7 +11,7 @@ public class Cluster{
     private Counter<String> currentCentroid;
     private Counter<String> oldCentroid;  
     public Cluster(){
-        indices=new List<Integer>();
+        indices=new ArrayList<Integer>();
         currentCentroid = new Counter<String>();
         oldCentroid     = new Counter<String>();
     }
