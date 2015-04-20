@@ -37,23 +37,27 @@ public class Vectorizer {
   
   
   public static void main( String[] args ) throws Exception {
-     Vectorizer v =new Vectorizer();
+	 //!!!!!!!!!!!!  Everything in this main function is just for testing purposes !!!!!!!!!!!!!!!!!!!
+   Vectorizer v =new Vectorizer();
+	 //Make a hashmap of arraylist to test makeVectors() function
      HashMap<String, ArrayList<List<String>> > hh = new HashMap<String, ArrayList<List<String>> >();
 	 String Id="1";String s1="loving " ;String s2="life";
-	 List<String> l0 = new ArrayList<String>(); l0.add(s1);l0.add(s2);
-	 ArrayList<List<String>> li0=new ArrayList<List<String>>();
-	 li0.add(l0);
-	 hh.put(Id,li0);
+	 List<String> l1 = new ArrayList<String>(); l1.add(s1);l1.add(s2);
+	 Id="3";s1="street" ;s2="washington";
+	 List<String> l3 = new ArrayList<String>(); l3.add(s1);l3.add(s2);
+	 ArrayList<List<String>> al1=new ArrayList<List<String>>();
+	 al1.add(l1);al1.add(l3);
+	 hh.put(Id,al1);
 	 	 
 	 Id="2";s1="having" ;s2="dreams";
-	 List<String> ll = new ArrayList<String>(); ll.add(s1);ll.add(s2);
-	 ArrayList<List<String>> lii=new ArrayList<List<String>>();
-	 lii.add(ll);
-	 hh.put(Id,lii);
+	 List<String> l2 = new ArrayList<String>(); l2.add(s1);l2.add(s2);
+	 ArrayList<List<String>> al2=new ArrayList<List<String>>();
+	 al2.add(l2);
+	 hh.put(Id,al2);
 	 
 	 HashMap<String, ArrayList<Counter<String>> > hm =v.makeVectors(hh);
-	 
-	 // Get a set of the entries
+    {//Print the hashmap-----------------------------
+      // Get a set of the entries
       Set set = hm.entrySet();
       // Get an iterator
       Iterator i = set.iterator();
@@ -63,7 +67,7 @@ public class Vectorizer {
          System.out.print(me.getKey() + ": ");
          System.out.println(me.getValue());
       }
-     
+    }//End of the print section---------------------- 
   }
 }
 
