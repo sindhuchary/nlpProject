@@ -27,7 +27,7 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 public class Tagger {
 
   //Declarations
-  private static HashMap<String,List<ArrayList<String>>> productMap;
+  private static HashMap<String, List<ArrayList<String>>> productMap;
   private static ArrayList<String> productIDLogger;
 
   public Tagger(){
@@ -81,7 +81,7 @@ public class Tagger {
   }
 
   //Vectorize takes in a filename and returns a vectorized form of the Strings with only the key information
-  public List<ArrayList<String>> vectorize( String filename ) {
+  public HashMap<String, List<ArrayList<String>>> vectorize( String filename ) {
     List<String> vectors = new ArrayList<String>();
 
     //Parse the file for the product id and review text
@@ -93,7 +93,7 @@ public class Tagger {
     //Call the removeNoise function to get rid of non-informative words
     List<ArrayList<String>> finalVectors = removeNoise( vectors );
 
-    return finalVectors;
+    return productMap;//finalVectors
   }
 
   //Tag takes the filename, reads in the Strings, tags them with Penn Treebank tags, and returns it in a List of Strings
@@ -189,7 +189,7 @@ public class Tagger {
     productIDLogger = new ArrayList<String>();
 
     //Vectorize the Strings in the input file
-    List<ArrayList<String>> vectors = newTagger.vectorize( args[0] );
+    HashMap<String, List<ArrayList<String>>> vectors = newTagger.vectorize( args[0] );
    
     //Useful help statements 
     System.out.println( productIDLogger.get(1) );
