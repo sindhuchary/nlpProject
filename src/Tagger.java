@@ -31,6 +31,9 @@ public class Tagger {
 
   //HashMap< ProductId, ListList Sentences >
   //HashMap< ProductId, List rawSentences >
+  public Tagger(){
+    this.productMap = new HashMap<String,List<ArrayList<String>>>();
+  }
 
   private void parse( String filename ) {
 
