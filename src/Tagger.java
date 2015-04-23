@@ -82,7 +82,7 @@ public class Tagger {
     List<String> vectors = new ArrayList<String>();
 
     //Parse the file for the product id and review text
-    parse( filename );
+    //parse( filename );
       
     //Call the tag function to tag each sentence with POS tags
     vectors = tag( filename );
@@ -127,6 +127,13 @@ public class Tagger {
 
     //Trace through each sentence and pull out the words we want
     for( String t : tReviews ) {
+
+
+      //*************************TO DO**********************************
+      if( t.contains( "UNKQQQ" ) ) {
+        t = t.substring( 0, t.length() - 6 );
+      }
+
       noNoise.add( new ArrayList<String>() );
   
       temp = t.split(" ");//split each sentence into word/tag pairs

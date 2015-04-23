@@ -21,8 +21,8 @@ for i in range(1, j):
         line2 = re.sub('\\bproduct/title: \\b', '', line2)
         line3 = fileList[c].rstrip('\r\n')
         line3 = re.sub('\\breview/text: \\b', '', line3)
-        print line1 + 'UNKQQQ.'
-        print line2 + '.'
+        #print line1
+        #print line2
         print line3
         print 
         a=a+11
