@@ -28,11 +28,11 @@ public class Tagger {
 
   //Declarations
   private static HashMap<String,List<ArrayList<String>>> productMap;
+  private static ArrayList<String> productIDLogger;
 
-  //HashMap< ProductId, ListList Sentences >
-  //HashMap< ProductId, List rawSentences >
   public Tagger(){
     this.productMap = new HashMap<String,List<ArrayList<String>>>();
+    this.productIDLogger = new ArrayList<String>();
   }
 
   private void parse( String filename ) {
@@ -124,19 +124,27 @@ public class Tagger {
   private List<ArrayList<String>> removeNoise( List<String> tReviews ) {
     List<ArrayList<String>> noNoise = new ArrayList<ArrayList<String>>();
     int count = 0;
+    int IDcount = 0;
 
     String[] temp, temp2;//holds temporary string arrays to split the tags from the words
-    String[] keepTags = { "NN", "NNS", "NNP", "NNPS", "RB", "RBR", "RBS", "JJ", "JJR", "JJS", "FW" };//tags we want to keep
+    String[] keepTags = { "NN", "NNS", "NNP", "NNPS", "RB", "RBR", "RBS", "JJ", "JJR", "JJS"/*, "FW"*/ };//tags we want to keep
 
     //Trace through each sentence and pull out the words we want
     for( String t : tReviews ) {
 
 
       //*************************TO DO**********************************
-      if( t.contains( "UNKQQQ" ) ) {
-        t = t.substring( 0, t.length() - 6 );
+      if( t.contains( "UNKQQQ" ) && (t.length() < 26)) {
+        t = t.substring( 0, t.length() - 13 );//remove the ending tag of ProductID
+        if( !productMap.containsKey( t ) ) {
+          productMap.put( t, new ArrayList<ArrayList<String>>() );//add the productID to the HashMap
+          productIDLogger.add(t);//add the productID to the ArrayList to give it an index
+          IDcount++;//increase the ID count so that reviews can be matched back to specific ID
+        }
+	continue;
       }
 
+      //Initialize a new ArrayList in each noNoise entry
       noNoise.add( new ArrayList<String>() );
   
       temp = t.split(" ");//split each sentence into word/tag pairs
@@ -148,11 +156,15 @@ public class Tagger {
 
         for( int j = 0; j < keepTags.length; j++ ) {
 
-          if( temp2[1].equals(keepTags[j]) )
+          if( temp2[1].equals(keepTags[j]) ) {
             noNoise.get(count).add(temp2[0]);//add word to its sentence's vector
+          }
 
         }   
       }
+
+      //Add each vector to it's corresponding productID entry in the HashMap
+      productMap.get(productIDLogger.get(IDcount-1)).add(noNoise.get(count));
 
       count++;//increase count to move on to another sentence
 
@@ -174,13 +186,14 @@ public class Tagger {
 
     //Initialize productMap
     productMap = new HashMap<String,List<ArrayList<String>>>();
+    productIDLogger = new ArrayList<String>();
 
     //Vectorize the Strings in the input file
     List<ArrayList<String>> vectors = newTagger.vectorize( args[0] );
-    
-    //Print out the vectors
-    for( List<String> s : vectors )
-      System.out.println( s );
+   
+    //Useful help statements 
+    System.out.println( productIDLogger.get(1) );
+    System.out.println( productMap.get( productIDLogger.get(1) ) );
 
   }
 

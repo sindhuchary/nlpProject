@@ -23,7 +23,7 @@ for i in range(1, j):
         line3 = re.sub('\\breview/text: \\b', '', line3)
         print line1 + 'UNKQQQ.'
         print line2 + '.'
-        print line3
+        print line3 + '.\n'
         print 
         a=a+11
         b=b+11
