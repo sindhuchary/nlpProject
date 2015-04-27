@@ -91,6 +91,9 @@ public class Tagger {
     vectors = tag( filename );
 
     //Call the removeNoise function to get rid of non-informative words
+    
+
+    //******************BUG HERE ****************
     ArrayList<List<String>> finalVectors = removeNoise( vectors );
 
     return productMap;//finalVectors
@@ -164,10 +167,14 @@ public class Tagger {
       }
 
       //Add each vector to it's corresponding productID entry in the HashMap
+      //System.out.println("IDCount = :" + IDcount); 
+      //System.out.println("productIDLogger.size: " + productIDLogger.size());
+
+
+      if(IDcount > 0){
       productMap.get(productIDLogger.get(IDcount-1)).add(noNoise.get(count));
-
       count++;//increase count to move on to another sentence
-
+        }
     }
 
     return noNoise;

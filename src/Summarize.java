@@ -27,6 +27,8 @@ public class Summarize{
   //getters and setters functions ------------------------------------------------------------
   public HashMap<String, ArrayList<List<String>>> getAllProds(){return allProds;}
   public HashMap<String, ArrayList<Counter<String>>> getAllProdsVects(){return allProdsVects;}
+  void setAllProds(HashMap<String, ArrayList<List<String>>> argHM){allProds=argHM;}
+
   void setAllProdsVects(HashMap<String, ArrayList<Counter<String>>> argHM){allProdsVects=argHM;}
   public HashMap<String, ArrayList<Cluster>> getAllProdsClusters(){return allProdsClusters;}
   //------------------------------------------------------------------------------------------
@@ -73,11 +75,24 @@ public class Summarize{
         for(Counter<String> vect : curProdVects){//loop vectors of prod
           double maxSim=0.0, tempSim=0.0; Cluster maxClus=null; Counter<String> maxVect=null;
           //loop clusters of prod to be able to classify vectors
+          if(curProdClusters.isEmpty()){
+            System.out.println("!!!!!!!!!!!! ---- EMPTY curProdClusters ---- !!!");  
+          }
+          else{
+            System.out.println("#####    NOT EMPTY ! Size :  " + curProdClusters.size()); 
+          }
+
           for(Cluster clus : curProdClusters){//loop clusters
             tempSim = clus.simCosine(vect);
             if(tempSim>=maxSim) {maxSim=tempSim; maxClus=clus; maxVect=vect;}
           }
-          maxClus.addIndice(curProdVects.indexOf(maxVect));
+          if(curProdVects.indexOf(maxVect) < 0 ){
+            System.out.println("maxVect"+maxVect); 
+            System.out.println("^^^^^^maxVect is null!!!****"); 
+          }
+          else{
+            maxClus.addIndice(curProdVects.indexOf(maxVect));
+            }
         }
         //loop and update all clusters
         for(Cluster clus : curProdClusters){clus.updateCentroid(curProdVects);}
@@ -93,6 +108,7 @@ public class Summarize{
     System.out.println("*************************************************************************************");
     System.out.println("*************************************************************************************");
     for(String prod : allProdsClusters.keySet()){
+      System.out.println("prod: " + prod); 
       ArrayList<Cluster> curProdClusters = allProdsClusters.get(prod);
       for(Cluster clus : curProdClusters){      
         ArrayList<Counter<String>> curProdVects = allProdsVects.get(prod);
@@ -102,8 +118,11 @@ public class Summarize{
           if(temp>=max) {max=temp; maxVect=vect;maxIndex=index;}
           index++;
         }
-        System.out.print("For cluster: "+clus+"Sent vect: "+maxVect+"\nsent: "+allProds.get(prod).get(maxIndex));
-        System.out.println("\n=====================================================================================");
+        System.out.print(
+                        "For cluster: "+clus+
+                      //  +"Sent vect: "+maxVect+
+                        "\nsent: "+allProds.get(prod).get(maxIndex)); 
+        System.out.println("\n=====================================================================================\n\n");
       }
     }
   }
@@ -141,10 +160,22 @@ public class Summarize{
 
     //run tagger on file//run Vectorizer-----------------------------------------
     Tagger tagger = new Tagger();
+    program.setAllProds(tagger.vectorize(filename)); 
+    
+   //System.out.println("@@@@@@@VECTORS@@@@@@@@@@"+ vectors.toString()); 
+
     Vectorizer vectorizer =new Vectorizer();
     /*TO FIX: make vectorize() turn back "HashMap<String, ArrayList< List<String>>>"
      * uncomment the next line after we get the fix */    
-    program.setAllProdsVects(    vectorizer.makeVectors( tagger.vectorize(filename) )   );
+
+    System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"); 
+    HashMap<String, ArrayList<Counter<String>>> myCounters = vectorizer.makeVectors(program.getAllProds() ) ;  
+
+    System.out.println("----------------------MY COUNTERS --------------"); 
+   // System.out.println(myCounters); 
+    program.setAllProdsVects(myCounters );
+    System.out.println("*******AFTER setAllProdsVects*****" ); 
+   
     //---------------------------------------------------------------------------
 
     //run the k-means cluster Algorithm       
