@@ -27,11 +27,11 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 public class Tagger {
 
   //Declarations
-  private static HashMap<String, List<ArrayList<String>>> productMap;
+  private static HashMap<String, ArrayList<List<String>>> productMap;
   private static ArrayList<String> productIDLogger;
 
   public Tagger(){
-    this.productMap = new HashMap<String,List<ArrayList<String>>>();
+    this.productMap = new HashMap<String,ArrayList<List<String>>>();
     this.productIDLogger = new ArrayList<String>();
   }
 
@@ -55,7 +55,7 @@ public class Tagger {
 
            if( newLine.contains( "productId" ) ) {
              
-             productMap.put( newLine.split( ":" )[1].substring(1), new ArrayList<ArrayList<String>>() );
+             productMap.put( newLine.split( ":" )[1].substring(1), new ArrayList<List<String>>() );
 
            }  
 
@@ -81,7 +81,7 @@ public class Tagger {
   }
 
   //Vectorize takes in a filename and returns a vectorized form of the Strings with only the key information
-  public HashMap<String, List<ArrayList<String>>> vectorize( String filename ) {
+  public HashMap<String, ArrayList<List<String>>> vectorize( String filename ) {
     List<String> vectors = new ArrayList<String>();
 
     //Parse the file for the product id and review text
@@ -91,7 +91,7 @@ public class Tagger {
     vectors = tag( filename );
 
     //Call the removeNoise function to get rid of non-informative words
-    List<ArrayList<String>> finalVectors = removeNoise( vectors );
+    ArrayList<List<String>> finalVectors = removeNoise( vectors );
 
     return productMap;//finalVectors
   }
@@ -121,8 +121,8 @@ public class Tagger {
   }
 
   //RemoveNoise takes the tagged sentences and returns a list of vectors containing words essential to the review sentence
-  private List<ArrayList<String>> removeNoise( List<String> tReviews ) {
-    List<ArrayList<String>> noNoise = new ArrayList<ArrayList<String>>();
+  private ArrayList<List<String>> removeNoise( List<String> tReviews ) {
+    ArrayList<List<String>> noNoise = new ArrayList<List<String>>();
     int count = 0;
     int IDcount = 0;
 
@@ -137,7 +137,7 @@ public class Tagger {
       if( t.contains( "UNKQQQ" ) && (t.length() < 26)) {
         t = t.substring( 0, t.length() - 13 );//remove the ending tag of ProductID
         if( !productMap.containsKey( t ) ) {
-          productMap.put( t, new ArrayList<ArrayList<String>>() );//add the productID to the HashMap
+          productMap.put( t, new ArrayList<List<String>>() );//add the productID to the HashMap
           productIDLogger.add(t);//add the productID to the ArrayList to give it an index
           IDcount++;//increase the ID count so that reviews can be matched back to specific ID
         }
@@ -185,11 +185,11 @@ public class Tagger {
     Tagger newTagger = new Tagger();
 
     //Initialize productMap
-    productMap = new HashMap<String,List<ArrayList<String>>>();
+    productMap = new HashMap<String,ArrayList<List<String>>>();
     productIDLogger = new ArrayList<String>();
 
     //Vectorize the Strings in the input file
-    HashMap<String, List<ArrayList<String>>> vectors = newTagger.vectorize( args[0] );
+    HashMap<String, ArrayList<List<String>>> vectors = newTagger.vectorize( args[0] );
    
     //Useful help statements 
     System.out.println( productIDLogger.get(1) );

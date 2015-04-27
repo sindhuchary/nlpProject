@@ -144,7 +144,7 @@ public class Summarize{
     Vectorizer vectorizer =new Vectorizer();
     /*TO FIX: make vectorize() turn back "HashMap<String, ArrayList< List<String>>>"
      * uncomment the next line after we get the fix */    
-    //program.setAllProdsVects(    vectorizer.makeVectors( tagger.vectorize(filename) )   );
+    program.setAllProdsVects(    vectorizer.makeVectors( tagger.vectorize(filename) )   );
     //---------------------------------------------------------------------------
 
     //run the k-means cluster Algorithm       
