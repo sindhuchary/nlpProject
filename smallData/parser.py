@@ -5,11 +5,11 @@ import sys
 import re
 
 j = len(sys.argv) 
-for i in range(1, j):   
-    file = open(sys.argv[i], 'r')
+for i in range(1, 2):   
+    file = open(sys.argv[1], 'r')
     counter = 0 
-    num_lines = sum(1 for line in file) 
-    file = open(sys.argv[i], 'r')
+    num_lines = sum(1 for line in file)     
+    file = open(sys.argv[1], 'r')
     a = 0
     b = 1
     c = 9
@@ -22,7 +22,7 @@ for i in range(1, j):
         line3 = fileList[c].rstrip('\r\n')
         line3 = re.sub('\\breview/text: \\b', '', line3)
         print line1 + 'UNKQQQ.'
-        print line2 + '.'
+        #print line2 + '.'
         print line3 + '.\n'
         print 
         a=a+11

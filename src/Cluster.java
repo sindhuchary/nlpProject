@@ -8,20 +8,20 @@ import java.util.ArrayList;
 import java.util.Set; 
 import util.Counter; 
 public class Cluster{
-	private List<Integer> indices; 
-	private Counter<String> currentCentroid;
-	private Counter<String> oldCentroid;  
-	public Cluster(Counter<String> centroidArg){//constructor
-		indices=new ArrayList<Integer>();
-		currentCentroid = centroidArg;
-		oldCentroid     = new Counter<String>();
-	}
-	//getters functions----------------
-	public List<Integer> getIndices(){return indices;}
-	public Counter<String> getCurrentCentroid(){return currentCentroid;}
-	public Counter<String> getOldCentroid(){return oldCentroid;}
-	//---------------------------------
-  
+    private List<Integer> indices;
+    private Counter<String> currentCentroid;
+    private Counter<String> oldCentroid;  
+    public Cluster(Counter<String> centroidArg){//constructor
+        indices=new ArrayList<Integer>();
+        currentCentroid = centroidArg;
+        oldCentroid     = new Counter<String>();
+    }	
+    //getters functions----------------
+    public List<Integer> getIndices(){return indices;}
+    public Counter<String> getCurrentCentroid(){return currentCentroid;}
+    public Counter<String> getOldCentroid(){return oldCentroid;}
+    //---------------------------------
+	
   /* calculates the value of a vector which is the square root of the sum 
    * of the components^2 of the vector */
   public double vectVal(Counter<String> vect){
@@ -84,7 +84,6 @@ public class Cluster{
 	public static void main( String[] args ){		
 		
 	}
-  
 }
 
 

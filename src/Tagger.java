@@ -27,11 +27,14 @@ import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 public class Tagger {
 
   //Declarations
+  private static HashMap<String, ArrayList<List<String>>> rawSentencesMap;//ADDED BY MOHAMED
   private static HashMap<String, ArrayList<List<String>>> productMap;
   private static ArrayList<String> productIDLogger;
-
+  public static HashMap<String, ArrayList<List<String>>>    getRawSentencesMap(){return rawSentencesMap;}//ADDED BY MOHAMED
+  
   public Tagger(){
-    this.productMap = new HashMap<String,ArrayList<List<String>>>();
+    this.rawSentencesMap = new HashMap<String,ArrayList<List<String>>>();//ADDED BY MOHAMED
+	this.productMap = new HashMap<String,ArrayList<List<String>>>();
     this.productIDLogger = new ArrayList<String>();
   }
 
@@ -93,7 +96,6 @@ public class Tagger {
     //Call the removeNoise function to get rid of non-informative words
     
 
-    //******************BUG HERE ****************
     ArrayList<List<String>> finalVectors = removeNoise( vectors );
 
     return productMap;//finalVectors
@@ -128,27 +130,33 @@ public class Tagger {
     ArrayList<List<String>> noNoise = new ArrayList<List<String>>();
     int count = 0;
     int IDcount = 0;
-
+    ArrayList<List<String>> rawSentences = new ArrayList<List<String>>();//ADDED BY MOHAMED
+	
     String[] temp, temp2;//holds temporary string arrays to split the tags from the words
     String[] keepTags = { "NN", "NNS", "NNP", "NNPS", "RB", "RBR", "RBS", "JJ", "JJR", "JJS"/*, "FW"*/ };//tags we want to keep
 
     //Trace through each sentence and pull out the words we want
     for( String t : tReviews ) {
-
+	  
 
       //*************************TO DO**********************************
       if( t.contains( "UNKQQQ" ) && (t.length() < 26)) {
         t = t.substring( 0, t.length() - 13 );//remove the ending tag of ProductID
         if( !productMap.containsKey( t ) ) {
           productMap.put( t, new ArrayList<List<String>>() );//add the productID to the HashMap
+          rawSentencesMap.put( t, new ArrayList<List<String>>() );//ADDED BY MOHAMED
           productIDLogger.add(t);//add the productID to the ArrayList to give it an index
           IDcount++;//increase the ID count so that reviews can be matched back to specific ID
         }
-	continue;
+      continue;//means we read product id so loop again to read review
       }
 
-      //Initialize a new ArrayList in each noNoise entry
+      //Initialize a new ArrayList in each noNoise entry.
+      /* noNoise has a sentence at every "count" and it's using the fact that product reviews will come
+      in order of product ID: so all reviews for the same product come right after each other (that's 
+      when we don't increase "count")  */
       noNoise.add( new ArrayList<String>() );
+      rawSentences.add( new ArrayList<String>() );//ADDED BY MOHAMED
   
       temp = t.split(" ");//split each sentence into word/tag pairs
 
@@ -156,14 +164,14 @@ public class Tagger {
       //Java contains? String contains from array? TODO****
       for( int i = 0; i < temp.length; i++ ) {
         temp2 = temp[i].split("/");
-
+        
+        rawSentences.get(count).add(temp2[0]);//ADDED BY MOHAMED
         for( int j = 0; j < keepTags.length; j++ ) {
-
           if( temp2[1].equals(keepTags[j]) ) {
             noNoise.get(count).add(temp2[0]);//add word to its sentence's vector
           }
 
-        }   
+        }
       }
 
       //Add each vector to it's corresponding productID entry in the HashMap
@@ -172,6 +180,7 @@ public class Tagger {
 
 
       if(IDcount > 0){
+      rawSentencesMap.get(productIDLogger.get(IDcount-1)).add(rawSentences.get(count));//ADDED BY MOHAMED
       productMap.get(productIDLogger.get(IDcount-1)).add(noNoise.get(count));
       count++;//increase count to move on to another sentence
         }

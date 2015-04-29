@@ -3,8 +3,9 @@
 *   Date:       15APR15
 *   Purpose:    This class runs the K-means cluster algorithm using the Tagger and Vectorizer 
 */
-
-//import Vectorizer.java
+//run "ant" to build
+//run "./summarizer.sh filename kValue" to execute, for example: "./summarizer.sh smallData/Electronics_10kLines.aa 8"
+//kValue how many clusters we will have
 
 import java.util.Set;
 import java.util.Iterator;
@@ -12,26 +13,35 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.File;
 import util.*;
-
 public class Summarize{
-  private int k =4;
+  //BufferedReader reader; 
+  private int k ;
+  private HashMap<String, String> rawSummary;//will be filled in retrieveBackSentences()
   private HashMap<String, ArrayList<List<String>> > allProds ;//gets filled in parse()
   private HashMap<String, ArrayList<Counter<String>>> allProdsVects;//gets filled in main after calling makeVectors()
   private HashMap<String, ArrayList<Cluster>> allProdsClusters ;//gets filled in iniateClusters() and clusterize()
-  public Summarize(){
-    allProds = new HashMap<String, ArrayList<List<String>> >(); 
-    allProdsVects = new HashMap<String, ArrayList<Counter<String>>>();
-    allProdsClusters= new HashMap<String, ArrayList<Cluster>>();
+  
+  public Summarize(int kArg){
+      allProds = new HashMap<String, ArrayList<List<String>> >(); 
+      allProdsVects = new HashMap<String, ArrayList<Counter<String>>>();
+      allProdsClusters= new HashMap<String, ArrayList<Cluster>>();
+      rawSummary = new HashMap<String, String>();
+      k=kArg;
   }
-  //getters and setters functions ------------------------------------------------------------
   public HashMap<String, ArrayList<List<String>>> getAllProds(){return allProds;}
-  public HashMap<String, ArrayList<Counter<String>>> getAllProdsVects(){return allProdsVects;}
   void setAllProds(HashMap<String, ArrayList<List<String>>> argHM){allProds=argHM;}
-
+  
+  public HashMap<String, ArrayList<Counter<String>>> getAllProdsVects(){return allProdsVects;}
   void setAllProdsVects(HashMap<String, ArrayList<Counter<String>>> argHM){allProdsVects=argHM;}
   public HashMap<String, ArrayList<Cluster>> getAllProdsClusters(){return allProdsClusters;}
-  //------------------------------------------------------------------------------------------
+	
   
   
   /* This function will be called by clusterize(). It determines when is are the clusters not changing enough
@@ -75,24 +85,13 @@ public class Summarize{
         for(Counter<String> vect : curProdVects){//loop vectors of prod
           double maxSim=0.0, tempSim=0.0; Cluster maxClus=null; Counter<String> maxVect=null;
           //loop clusters of prod to be able to classify vectors
-          if(curProdClusters.isEmpty()){
-            System.out.println("!!!!!!!!!!!! ---- EMPTY curProdClusters ---- !!!");  
-          }
-          else{
-            System.out.println("#####    NOT EMPTY ! Size :  " + curProdClusters.size()); 
-          }
-
+          //System.out.println("\nprod:"+prod+" indexOfVect:"+curProdVects.indexOf(vect)+" vect"+vect+" ------------------------------------------------");
           for(Cluster clus : curProdClusters){//loop clusters
             tempSim = clus.simCosine(vect);
             if(tempSim>=maxSim) {maxSim=tempSim; maxClus=clus; maxVect=vect;}
+            //System.out.print("tempSim:"+tempSim+" clus:"+clus);
           }
-          if(curProdVects.indexOf(maxVect) < 0 ){
-            System.out.println("maxVect"+maxVect); 
-            System.out.println("^^^^^^maxVect is null!!!****"); 
-          }
-          else{
-            maxClus.addIndice(curProdVects.indexOf(maxVect));
-            }
+          maxClus.addIndice(curProdVects.indexOf(maxVect));
         }
         //loop and update all clusters
         for(Cluster clus : curProdClusters){clus.updateCentroid(curProdVects);}
@@ -104,11 +103,14 @@ public class Summarize{
   * get the index for that vector and retrieve the original sentence from allProds (allProds has all the 
   * original sentences) . */
   public void retrieveBackSentences(){
+    /*System.out.println("*************************************************************************************");
     System.out.println("*************************************************************************************");
     System.out.println("*************************************************************************************");
-    System.out.println("*************************************************************************************");
+    */
     for(String prod : allProdsClusters.keySet()){
-      System.out.println("prod: " + prod); 
+      String rawSentOutput="", bulletedOutput="";
+      //System.out.println("=====================================================================================");
+      //System.out.println("prod: "+prod);
       ArrayList<Cluster> curProdClusters = allProdsClusters.get(prod);
       for(Cluster clus : curProdClusters){      
         ArrayList<Counter<String>> curProdVects = allProdsVects.get(prod);
@@ -118,12 +120,23 @@ public class Summarize{
           if(temp>=max) {max=temp; maxVect=vect;maxIndex=index;}
           index++;
         }
-        System.out.print(
-                        "For cluster: "+clus+
-                      //  +"Sent vect: "+maxVect+
-                        "\nsent: "+allProds.get(prod).get(maxIndex)); 
-        System.out.println("\n=====================================================================================\n\n");
+        //System.out.print("For cluster: "+clus+"Sent vect: "+maxVect+"\nsent: "+Tagger.getRawSentencesMap().get(prod).get(maxIndex)+"\n");
+        //Preparing strings to be output to the screen****************************
+        bulletedOutput+="* ";
+        for(String word : allProds.get(prod).get(maxIndex) ){
+          bulletedOutput+=word+" ";
+        }
+        bulletedOutput+="\n";
+        for(String word : Tagger.getRawSentencesMap().get(prod).get(maxIndex) ){
+          rawSentOutput+=word+" ";
+        }
+        rawSentOutput+="\n";
+        //*************************************************************************
       }
+      rawSummary.put(prod, rawSentOutput);
+      //System.out.println("B U L L E T S   O U T P U T :"+"\n"+bulletedOutput);
+      //System.out.println("R A W   S E N T E N C E S   O U T P U T :\n"+rawSentOutput);
+      //System.out.println("=====================================================================================");
     }
   }
     
@@ -143,48 +156,79 @@ public class Summarize{
   public void printAllProdsClusters(){
     System.out.println("allProdsClusters: ");
     for(String prod : allProdsClusters.keySet() ){
-      System.out.println(prod+" => "+allProdsVects.get(prod).size()+"vectors divided between "+k+" clusters"+"\n"+allProdsClusters.get(prod) );
+      System.out.println(prod+" => "+allProdsVects.get(prod).size()+" vectors divided between "+k+" clusters"+"\n"+allProdsClusters.get(prod) );
     }
   }
-  
-  
+  public void printAnyHashMap(HashMap<String, ArrayList<List<String>>> hm){
+    System.out.println("/n------------------------------------the hashMap: ----------------------------------");
+    for(String prod : hm.keySet() ){
+      System.out.println(prod+" => "+hm.get(prod) );
+    }
+  }
+    
   public static void main(String[] args) throws Exception{
-    Summarize program = new Summarize();
-    
-    //get file input from stdin
-    if(args.length != 1){
-        System.err.println("Please provide a single datafile"); 
-        System.exit(0); 
+    if(args.length!=2){
+      System.out.println("Usage: java Summarize <fileName> k"); System.exit(0);
     }
-    String filename = args[0]; 
-
-    //run tagger on file//run Vectorizer-----------------------------------------
-    Tagger tagger = new Tagger();
-    program.setAllProds(tagger.vectorize(filename)); 
+    //check if the file exists or not
+    File f = new File(args[0]);
+    if( !f.exists() || f.isDirectory() ) {
+      System.out.println("File does not exist!!!!!!!"); System.exit(0);
+    }
+    //run python parser ------------------------------
+    String[] cmd = {
+        "/bin/bash",
+        "-c",
+        "smallData/parser.py "+args[0]+" > parsedInput.txt"
+    };
+    Runtime.getRuntime().exec(cmd);
+    //------------------------------------------------
+    Summarize program = new Summarize(Integer.parseInt(args[1]) );
+    Vectorizer v =new Vectorizer();
+    Tagger t=new Tagger();
+    //program.parse();
+    //program.printAllProds();
+    //System.out.println("Vectorizing");
+    program.setAllProds(v.cleanHM(t.vectorize("parsedInput.txt")) );    
+    /*System.out.println("---------------------allProds-----------------------");
+    program.printAllProds();
+    System.out.println("--------------------- END -----------------------");System.out.println("\n");
+    */
+    HashMap<String, ArrayList<Counter<String>>> myCounters = v.makeVectors( program.getAllProds() ); 
     
-   //System.out.println("@@@@@@@VECTORS@@@@@@@@@@"+ vectors.toString()); 
-
-    Vectorizer vectorizer =new Vectorizer();
-    /*TO FIX: make vectorize() turn back "HashMap<String, ArrayList< List<String>>>"
-     * uncomment the next line after we get the fix */    
-
-    System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$"); 
-    HashMap<String, ArrayList<Counter<String>>> myCounters = vectorizer.makeVectors(program.getAllProds() ) ;  
-
-    System.out.println("----------------------MY COUNTERS --------------"); 
-   // System.out.println(myCounters); 
-    program.setAllProdsVects(myCounters );
-    System.out.println("*******AFTER setAllProdsVects*****" ); 
-   
-    //---------------------------------------------------------------------------
-
-    //run the k-means cluster Algorithm       
+    /*System.out.println("---------------------myCounters-----------------------");
+    System.out.println(myCounters);
+    System.out.println("--------------------- END -----------------------");System.out.println("\n");
+    */
+    program.setAllProdsVects(  myCounters);
+    /*TODO: run the k-means cluster Algorithm. Double Loop here: loop through products and loop til
+     * clusters centroid dont change that much anymore */
     program.initiateClusters();
+    //program.printAllProdsClusters();
+    //System.out.println("\n\n=====================================================================================CLUSTERIZE==================");
     program.clusterize();
-    program.printAllProdsClusters();
-    program.retrieveBackSentences();
-
+    //program.printAllProdsClusters();
+    /*System.out.println("\n\n============================= RAW SENTENCES ========================");
+    program.printAnyHashMap(t.getRawSentencesMap());
+    System.out.println("\n\n================================== END ============================");System.out.println("\n\n");
+    */
+    program.retrieveBackSentences(); 
+    //read in ID and turn back review-----------------------------------------
+    try {
+      InputStreamReader in= new InputStreamReader(System.in);
+      BufferedReader input = new BufferedReader(in);
+      String str="";
+      while (true){
+        System.out.print("Hit q or quit to leave. Enter product ID: ");
+        if((str = input.readLine()) == null ) break;
+        if(str.equals("quit") || str.equals("q") ) break;
+        String retStr = program.rawSummary.get(str);
+        if(retStr != null ) System.out.println(retStr);
+        else System.out.println("No review for this id you entered !!!!!!");
+      }
+    }catch (IOException io) {
+      io.printStackTrace();
+    }
+    //------------------------------------------------------------------------
   }
-
-
 }

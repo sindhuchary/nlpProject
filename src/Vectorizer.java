@@ -10,13 +10,27 @@ import java.util.List;
 import java.util.Set;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Collections;
 import util.Counter;
 
 public class Vectorizer {
 
   public Vectorizer( ) {//constructor
   }
- 
+  
+  //this will delete all empty strings from the hashmap
+  public HashMap<String, ArrayList< List<String> >> cleanHM(HashMap<String, ArrayList< List<String> >> hm){
+    for(String ID : hm.keySet() ){
+      ArrayList<List<String>> curIDSentences = hm.get(ID);
+      List<String> tempL= new ArrayList<String>();
+      curIDSentences.removeAll(Collections.singleton(tempL));
+      //for(List<String> sentence : curIDSentences ){        
+        //if(sentence.isEmpty()) {System.out.println("yachaaaaaaaaaaaaaaaaaaaaaaaaaaaaawm");curIDSentences.remove(sentence);}
+      //}
+    }
+    return hm;
+  }
+  
   //input is hashmap of ID's and list of sentences
   public HashMap<String, ArrayList<Counter<String>> > makeVectors(HashMap<String, ArrayList< List<String> > > hm) {    
     HashMap<String, ArrayList<Counter<String>> > retHM = new HashMap<String, ArrayList<Counter<String>> >();
@@ -37,8 +51,7 @@ public class Vectorizer {
   
   
   public static void main( String[] args ) throws Exception {
-	 //!!!!!!!!!!!!  Everything in this main function is just for testing purposes !!!!!!!!!!!!!!!!!!!
-   Vectorizer v =new Vectorizer();
+	 Vectorizer v =new Vectorizer();
 	 //Make a hashmap of arraylist to test makeVectors() function
      HashMap<String, ArrayList<List<String>> > hh = new HashMap<String, ArrayList<List<String>> >();
 	 String Id="1";String s1="loving " ;String s2="life";
