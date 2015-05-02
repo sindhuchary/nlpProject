@@ -23,17 +23,17 @@ import util.*;
 public class Summarize{
   //BufferedReader reader; 
   private int k ;
-  private HashMap<String, String> rawSummary;//will be filled in retrieveBackSentences()
-  private HashMap<String, ArrayList<List<String>> > allProds ;//gets filled in parse()
-  private HashMap<String, ArrayList<Counter<String>>> allProdsVects;//gets filled in main after calling makeVectors()
+  private HashMap<String, String> rawSummary;//will be filled in retrieveBackSentences(), stores the final summaries
+  private HashMap<String, ArrayList<List<String>> > allProds ;//gets filled in main() using setAllProds()
+  private HashMap<String, ArrayList<Counter<String>>> allProdsVects;//gets filled in main after calling setAllProdsVectsx()
   private HashMap<String, ArrayList<Cluster>> allProdsClusters ;//gets filled in iniateClusters() and clusterize()
   
   public Summarize(int kArg){
-      allProds = new HashMap<String, ArrayList<List<String>> >(); 
-      allProdsVects = new HashMap<String, ArrayList<Counter<String>>>();
-      allProdsClusters= new HashMap<String, ArrayList<Cluster>>();
-      rawSummary = new HashMap<String, String>();
-      k=kArg;
+    allProds = new HashMap<String, ArrayList<List<String>> >(); 
+    allProdsVects = new HashMap<String, ArrayList<Counter<String>>>();
+    allProdsClusters= new HashMap<String, ArrayList<Cluster>>();
+    rawSummary = new HashMap<String, String>();
+    k=kArg;
   }
   public HashMap<String, ArrayList<List<String>>> getAllProds(){return allProds;}
   void setAllProds(HashMap<String, ArrayList<List<String>>> argHM){allProds=argHM;}
@@ -112,7 +112,7 @@ public class Summarize{
       //System.out.println("=====================================================================================");
       //System.out.println("prod: "+prod);
       ArrayList<Cluster> curProdClusters = allProdsClusters.get(prod);
-      for(Cluster clus : curProdClusters){      
+      for(Cluster clus : curProdClusters){
         ArrayList<Counter<String>> curProdVects = allProdsVects.get(prod);
         double temp=0.0,max=0.0; Counter<String>  maxVect=null;int maxIndex=0, index=0;
         for(Counter<String> vect : curProdVects){//loop products
