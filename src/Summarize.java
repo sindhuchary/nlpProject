@@ -6,7 +6,8 @@
 //run "ant" to build
 //run "./summarizer.sh filename kValue" to execute, for example: "./summarizer.sh smallData/Electronics_10kLines.aa 8"
 //kValue how many clusters we will have
-
+/*This program will provide a summary for all product even for products that didn't have a lot of reviews, but the
+ summary will be very short.*/
 import java.util.Set;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class Summarize{
   * to do this process for all products we have.  */
   public void initiateClusters(){
     for(String prod : allProdsVects.keySet()){//loop products
-      ArrayList<Counter<String>> curProdVects = allProdsVects.get(prod);      
+      ArrayList<Counter<String>> curProdVects = allProdsVects.get(prod);     
       int jump = curProdVects.size()/k;
       
       ArrayList<Cluster> tempArrClusters=new ArrayList<Cluster>();
