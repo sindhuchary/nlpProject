@@ -34,7 +34,6 @@ public class Cluster{
 	
   //sim cosine of vect and currentCentroid
   public double simCosine(Counter<String> vect){
-		//size=(size1<size2)? size1 : size2;
 		double temp=0.0;
 		for(String str : vect.keySet()){
 		  if(currentCentroid.containsKey(str) ){

@@ -24,9 +24,6 @@ public class Vectorizer {
       ArrayList<List<String>> curIDSentences = hm.get(ID);
       List<String> tempL= new ArrayList<String>();
       curIDSentences.removeAll(Collections.singleton(tempL));
-      //for(List<String> sentence : curIDSentences ){        
-        //if(sentence.isEmpty()) {System.out.println("yachaaaaaaaaaaaaaaaaaaaaaaaaaaaaawm");curIDSentences.remove(sentence);}
-      //}
     }
     return hm;
   }
@@ -36,7 +33,6 @@ public class Vectorizer {
     HashMap<String, ArrayList<Counter<String>> > retHM = new HashMap<String, ArrayList<Counter<String>> >();
     for(String ID : hm.keySet() ){
         ArrayList<Counter<String>> tempVectList=new ArrayList<Counter<String>>();
-        //hm.get(ID) returns back List< List<String> > 
         for(List<String> sentence : hm.get(ID) ){//loop through the list of sentences for that specific ID 
           Counter<String> tempVect = new Counter<String>(); 
           for(String word : sentence){//loop through the sentence
@@ -49,11 +45,11 @@ public class Vectorizer {
     return retHM;
   }
   
-  
+  //Everything in main is just for testing purposes of this class
   public static void main( String[] args ) throws Exception {
-	 Vectorizer v =new Vectorizer();
+   Vectorizer v =new Vectorizer();
 	 //Make a hashmap of arraylist to test makeVectors() function
-     HashMap<String, ArrayList<List<String>> > hh = new HashMap<String, ArrayList<List<String>> >();
+   HashMap<String, ArrayList<List<String>> > hh = new HashMap<String, ArrayList<List<String>> >();
 	 String Id="1";String s1="loving " ;String s2="life";
 	 List<String> l1 = new ArrayList<String>(); l1.add(s1);l1.add(s2);
 	 Id="3";s1="street" ;s2="washington";

@@ -5,9 +5,9 @@
 */
 //run "ant" to build
 //run "./summarizer.sh filename kValue" to execute, for example: "./summarizer.sh smallData/Electronics_10kLines.aa 8"
-//kValue how many clusters we will have
-/*This program will provide a summary for all product even for products that didn't have a lot of reviews, but the
- summary will be very short.*/
+//kValue -> how many clusters we will have
+/*This program will provide a review-summary for all products (even for products that didn't have a lot of reviews, but their
+ summary will be very short). */
 import java.util.Set;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -86,11 +86,9 @@ public class Summarize{
         for(Counter<String> vect : curProdVects){//loop vectors of prod
           double maxSim=0.0, tempSim=0.0; Cluster maxClus=null; Counter<String> maxVect=null;
           //loop clusters of prod to be able to classify vectors
-          //System.out.println("\nprod:"+prod+" indexOfVect:"+curProdVects.indexOf(vect)+" vect"+vect+" ------------------------------------------------");
           for(Cluster clus : curProdClusters){//loop clusters
             tempSim = clus.simCosine(vect);
             if(tempSim>=maxSim) {maxSim=tempSim; maxClus=clus; maxVect=vect;}
-            //System.out.print("tempSim:"+tempSim+" clus:"+clus);
           }
           maxClus.addIndice(curProdVects.indexOf(maxVect));
         }
@@ -104,14 +102,8 @@ public class Summarize{
   * get the index for that vector and retrieve the original sentence from allProds (allProds has all the 
   * original sentences) . */
   public void retrieveBackSentences(){
-    /*System.out.println("*************************************************************************************");
-    System.out.println("*************************************************************************************");
-    System.out.println("*************************************************************************************");
-    */
     for(String prod : allProdsClusters.keySet()){
       String rawSentOutput="", bulletedOutput="";
-      //System.out.println("=====================================================================================");
-      //System.out.println("prod: "+prod);
       ArrayList<Cluster> curProdClusters = allProdsClusters.get(prod);
       for(Cluster clus : curProdClusters){
         ArrayList<Counter<String>> curProdVects = allProdsVects.get(prod);
@@ -120,9 +112,7 @@ public class Summarize{
           temp=clus.simCosine(vect);
           if(temp>=max) {max=temp; maxVect=vect;maxIndex=index;}
           index++;
-        }
-        //System.out.print("For cluster: "+clus+"Sent vect: "+maxVect+"\nsent: "+Tagger.getRawSentencesMap().get(prod).get(maxIndex)+"\n");
-        //Preparing strings to be output to the screen****************************
+        }        
         bulletedOutput+="* ";
         for(String word : allProds.get(prod).get(maxIndex) ){
           bulletedOutput+=word+" ";
@@ -132,12 +122,8 @@ public class Summarize{
           rawSentOutput+=word+" ";
         }
         rawSentOutput+="\n";
-        //*************************************************************************
       }
       rawSummary.put(prod, rawSentOutput);
-      //System.out.println("B U L L E T S   O U T P U T :"+"\n"+bulletedOutput);
-      //System.out.println("R A W   S E N T E N C E S   O U T P U T :\n"+rawSentOutput);
-      //System.out.println("=====================================================================================");
     }
   }
     
@@ -171,11 +157,13 @@ public class Summarize{
     if(args.length!=2){
       System.out.println("Usage: java Summarize <fileName> k"); System.exit(0);
     }
+    
     //check if the file exists or not
     File f = new File(args[0]);
     if( !f.exists() || f.isDirectory() ) {
       System.out.println("File does not exist!!!!!!!"); System.exit(0);
     }
+    
     //run python parser ------------------------------
     String[] cmd = {
         "/bin/bash",
@@ -184,37 +172,22 @@ public class Summarize{
     };
     Runtime.getRuntime().exec(cmd);
     //------------------------------------------------
+    
     Summarize program = new Summarize(Integer.parseInt(args[1]) );
     Vectorizer v =new Vectorizer();
     Tagger t=new Tagger();
-    //program.parse();
-    //program.printAllProds();
-    //System.out.println("Vectorizing");
-    program.setAllProds(v.cleanHM(t.vectorize("parsedInput.txt")) );    
-    /*System.out.println("---------------------allProds-----------------------");
-    program.printAllProds();
-    System.out.println("--------------------- END -----------------------");System.out.println("\n");
-    */
-    HashMap<String, ArrayList<Counter<String>>> myCounters = v.makeVectors( program.getAllProds() ); 
     
-    /*System.out.println("---------------------myCounters-----------------------");
-    System.out.println(myCounters);
-    System.out.println("--------------------- END -----------------------");System.out.println("\n");
-    */
+    program.setAllProds(v.cleanHM(t.vectorize("parsedInput.txt")) );    
+    
+    HashMap<String, ArrayList<Counter<String>>> myCounters = v.makeVectors( program.getAllProds() ); 
     program.setAllProdsVects(  myCounters);
-    /*TODO: run the k-means cluster Algorithm. Double Loop here: loop through products and loop til
-     * clusters centroid dont change that much anymore */
+    
     program.initiateClusters();
-    //program.printAllProdsClusters();
-    //System.out.println("\n\n=====================================================================================CLUSTERIZE==================");
     program.clusterize();
-    //program.printAllProdsClusters();
-    /*System.out.println("\n\n============================= RAW SENTENCES ========================");
-    program.printAnyHashMap(t.getRawSentencesMap());
-    System.out.println("\n\n================================== END ============================");System.out.println("\n\n");
-    */
-    program.retrieveBackSentences(); 
-    //read in ID and turn back review-----------------------------------------
+    
+    program.retrieveBackSentences();
+    
+    //Live session: read in ID and turn back review-----------------------------------------
     try {
       InputStreamReader in= new InputStreamReader(System.in);
       BufferedReader input = new BufferedReader(in);
@@ -230,6 +203,6 @@ public class Summarize{
     }catch (IOException io) {
       io.printStackTrace();
     }
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------------
   }
 }
